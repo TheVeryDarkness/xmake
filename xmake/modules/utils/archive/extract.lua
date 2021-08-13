@@ -48,7 +48,7 @@ function _extract_using_tar(archivefile, outputdir, extension, opt)
 
     -- on msys2/cygwin? we need translate input path to cygwin-like path
     if is_subhost("msys", "cygwin") then
-        archivefile = path.cygwin_path(archivefile)
+      --  archivefile = path.cygwin_path(archivefile)
     end
 
     -- init argv
