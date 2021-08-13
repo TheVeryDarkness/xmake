@@ -192,7 +192,10 @@ function _extract_using_gzip(archivefile, outputdir, extension, opt)
     if not option.get("verbose") then
         table.insert(argv, "-q")
     end
-    table.insert(argv, tmpfile)
+    -- on msys2/cygwin? we need translate input path to cygwin-like path
+    if is_subhost("msys", "cygwin") then
+        table.insert(argv, path.cygwin_path(tmpfile))
+    end
 
     -- ensure output directory
     if not os.isdir(outputdir) then
