@@ -32,9 +32,6 @@ import("extension", {alias = "get_archive_extension"})
 -- extract archivefile using tar
 function _extract_using_tar(archivefile, outputdir, extension, opt)
 
-    print("_extract_using_tar", archivefile, extension)
-    print("isfile", os.isfile(archivefile))
-
     -- the tar of windows can only extract "*.tar"
     if os.host() == "windows" and extension ~= ".tar" then
         return false
@@ -46,16 +43,23 @@ function _extract_using_tar(archivefile, outputdir, extension, opt)
         return false
     end
 
-    -- on msys2/cygwin? we need translate input path to cygwin-like path
-    if is_subhost("msys", "cygwin") then
-      --  archivefile = path.cygwin_path(archivefile)
-    end
-
     -- init argv
     local argv = {}
-    if is_subhost("windows") then
+    if is_host("windows") then
         -- force "x:\\xx" as local file
-        table.insert(argv, "--force-local")
+        local force_local = _g.force_local
+        if force_local == nil then
+            force_local = try {function ()
+                local result = os.iorunv(program, {"--help"})
+                if result and result:find("--force-local", 1, true) then
+                    return true
+                end
+            end}
+            _g.force_local = force_local or false
+        end
+        if force_local then
+            table.insert(argv, "--force-local")
+        end
     end
     table.insert(argv, option.get("verbose") and "-xvf" or "-xf")
     table.insert(argv, archivefile)
@@ -91,6 +95,7 @@ function _extract_using_tar(archivefile, outputdir, extension, opt)
     -- ok
     return true
 end
+
 
 -- extract archivefile using 7z
 function _extract_using_7z(archivefile, outputdir, extension, opt)
