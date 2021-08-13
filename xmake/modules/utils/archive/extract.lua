@@ -209,9 +209,10 @@ function _extract_using_gzip(archivefile, outputdir, extension, opt)
 
     -- enter outputdir
     local oldir = os.cd(outputdir)
-
+print(111, os.files("*"))
     -- extract it
     os.vrunv(program, argv)
+print(os.files("*"))
 
     -- leave outputdir
     os.cd(oldir)
