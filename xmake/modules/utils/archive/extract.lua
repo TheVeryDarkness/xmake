@@ -32,6 +32,9 @@ import("extension", {alias = "get_archive_extension"})
 -- extract archivefile using tar
 function _extract_using_tar(archivefile, outputdir, extension, opt)
 
+    print("_extract_using_tar", archivefile, extension)
+    print("isfile", os.isfile(archivefile))
+
     -- the tar of windows can only extract "*.tar"
     if os.host() == "windows" and extension ~= ".tar" then
         return false
@@ -91,6 +94,7 @@ end
 
 -- extract archivefile using 7z
 function _extract_using_7z(archivefile, outputdir, extension, opt)
+    print("_extract_using_7z", archivefile, extension)
 
     -- find 7z
     local program = find_7z()
@@ -164,6 +168,8 @@ end
 
 -- extract archivefile using gzip
 function _extract_using_gzip(archivefile, outputdir, extension, opt)
+
+    print("_extract_using_gzip", archivefile, extension)
 
     -- find gzip
     local program = find_gzip()
